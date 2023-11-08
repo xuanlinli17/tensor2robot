@@ -32,8 +32,8 @@ from tensor2robot.research.qtopt import optimizer_builder
 from tensor2robot.utils import tensorspec_utils
 import tensorflow.compat.v1 as tf
 from tensorflow.compat.v1 import estimator as tf_estimator
-from tensorflow.contrib import framework as contrib_framework
-from tensorflow.contrib import training as contrib_training
+import tf_slim
+import tf_agents
 from tensorflow_estimator.contrib.estimator.python.estimator import replicate_model_fn
 
 TRAIN = tf_estimator.ModeKeys.TRAIN
@@ -111,12 +111,12 @@ class LegacyGraspingModelWrapper(critic_model.CriticModel):
 
   def get_trainable_variables(self):
     """Returns list of trainable model variables."""
-    return contrib_framework.get_trainable_variables(
+    return tf_slim.get_trainable_variables(
         self.legacy_model_class.__name__)
 
   def get_variables(self):
     """Returns list of model variables."""
-    return contrib_framework.get_variables(self.legacy_model_class.__name__)
+    return tf_slim.get_variables(self.legacy_model_class.__name__)
 
   def get_label_specification(self, mode):
     del mode
@@ -219,7 +219,7 @@ class LegacyGraspingModelWrapper(critic_model.CriticModel):
       if self._summarize_gradients:
         logging.info('We cannot use summarize_gradients on TPUs.')
       summarize_gradients = False
-    return contrib_training.create_train_op(
+    return tf_agents.utils.eager_utils.create_train_op(
         loss,
         optimizer,
         summarize_gradients=summarize_gradients,

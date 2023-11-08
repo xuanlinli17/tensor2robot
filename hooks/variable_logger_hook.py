@@ -21,7 +21,7 @@ from absl import logging
 
 import numpy as np
 import tensorflow.compat.v1 as tf
-from tensorflow.contrib import framework as contrib_framework
+import tf_slim
 
 
 class VariableLoggerHook(tf.train.SessionRunHook):
@@ -39,7 +39,7 @@ class VariableLoggerHook(tf.train.SessionRunHook):
 
   def begin(self):
     """Captures all variables to be read out during the session run."""
-    self._variables_to_log = contrib_framework.get_variables()
+    self._variables_to_log = tf_slim.get_variables()
 
   def before_run(self, run_context):
     """Adds the variables to the run args."""

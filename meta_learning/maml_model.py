@@ -31,7 +31,7 @@ from tensor2robot.preprocessors import abstract_preprocessor
 from tensor2robot.utils import tensorspec_utils as utils
 from tensorflow.compat.v1 import estimator as tf_estimator
 import tensorflow.compat.v1 as tf  # tf
-from tensorflow.contrib import training as contrib_training
+import tf_agents
 
 
 # pylint: disable=invalid-name
@@ -405,7 +405,7 @@ class MAMLModel(abstract_model.AbstractT2RModel):
       if self._summarize_gradients:
         logging.info('We cannot use summarize_gradients on TPUs.')
       summarize_gradients = False
-    return contrib_training.create_train_op(
+    return tf_agents.utils.eager_utils.create_train_op(
         loss,
         optimizer,
         variables_to_train=vars_to_train,

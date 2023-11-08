@@ -26,8 +26,8 @@ import numpy as np
 from six.moves import zip
 from tensor2robot.utils import tensorspec_utils as utils
 import tensorflow.compat.v1 as tf
-from tensorflow.contrib import framework as contrib_framework
-nest = contrib_framework.nest
+from tensorflow import TensorSpec
+from tensorflow import nest
 
 TSPEC = utils.ExtendedTensorSpec
 
@@ -627,7 +627,7 @@ class TensorspecUtilsTest(parameterized.TestCase, tf.test.TestCase):
     self.assertEqual(desc_overwrite.is_optional, not is_optional)
 
   def test_extended_from_spec(self):
-    desc = contrib_framework.TensorSpec(shape=[1], dtype=np.float32)
+    desc = TensorSpec(shape=[1], dtype=np.float32)
     extended_desc = utils.ExtendedTensorSpec.from_spec(desc)
     self.assertEqual(desc, extended_desc)
 

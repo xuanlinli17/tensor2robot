@@ -30,7 +30,7 @@ from tensor2robot.utils import mocks
 from tensor2robot.utils import train_eval
 import tensorflow.compat.v1 as tf
 from tensorflow.compat.v1 import estimator as tf_estimator
-from tensorflow.contrib import predictor as contrib_predictor
+from tensorflow import predictor as contrib_predictor
 
 FLAGS = flags.FLAGS
 

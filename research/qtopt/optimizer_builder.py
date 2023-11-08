@@ -18,8 +18,8 @@
 
 from absl import logging
 import tensorflow.compat.v1 as tf
-from tensorflow.contrib import opt as contrib_opt
-from tensorflow.contrib.tpu.python.tpu import tpu_function
+from tensorflow import opt as contrib_opt
+from tensorflow.tpu.python.tpu import tpu_function
 
 
 def BuildOpt(hparams):

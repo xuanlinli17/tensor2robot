@@ -22,10 +22,9 @@ import gin
 from six.moves import range
 from tensor2robot.layers import film_resnet_model as resnet_lib
 import tensorflow.compat.v1 as tf
-from tensorflow.contrib import framework as contrib_framework
-from tensorflow.contrib import slim as contrib_slim
+import tf_slim
 
-slim = contrib_slim
+slim = tf_slim
 
 
 def _get_block_sizes(resnet_size):
@@ -223,7 +222,7 @@ def resnet_init_from_checkpoint_fn(checkpoint):
   logging.info('Initializing model weights from %s', checkpoint)
   assignment_map = {}
   resnet_scope = _get_resnet_scope()
-  for var in contrib_framework.get_variables(
+  for var in slim.get_variables(
       scope=resnet_scope, collection=tf.GraphKeys.TRAINABLE_VARIABLES):
     if 'dense' not in var.op.name:
       # Remove the parent scope prefix.

@@ -22,9 +22,9 @@ import numpy as np
 from tensor2robot.meta_learning import meta_tfdata
 import tensorflow.compat.v1 as tf
 import tensorflow_probability as tfp
-from tensorflow.contrib import slim as contrib_slim
+import tf_slim
 
-slim = contrib_slim
+slim = tf_slim
 
 
 def get_mixture_distribution(

@@ -30,18 +30,19 @@ from tensor2robot.models import optimizers
 from tensor2robot.preprocessors import abstract_preprocessor
 from tensor2robot.preprocessors import noop_preprocessor
 from tensor2robot.utils import tensorspec_utils
+from tensorflow.compat.v1.estimator.tpu import RunConfig as TPURunConfig
 import tensorflow.compat.v1 as tf
 from tensorflow.compat.v1 import estimator as tf_estimator
-from tensorflow.contrib import framework as contrib_framework
-from tensorflow.contrib import tpu as contrib_tpu
-from tensorflow.contrib import training as contrib_training
+import tf_slim
+from tensorflow import tpu as contrib_tpu
+from tf_agents.utils import eager_utils
 
 FLAGS = flags.FLAGS
 TRAIN = tf_estimator.ModeKeys.TRAIN
 EVAL = tf_estimator.ModeKeys.EVAL
 PREDICT = tf_estimator.ModeKeys.PREDICT
 
-RunConfigType = Optional[Union[tf_estimator.RunConfig, contrib_tpu.RunConfig]]
+RunConfigType = Optional[Union[tf_estimator.RunConfig, TPURunConfig]]
 ParamsType = Optional[Dict[Text, Any]]
 
 DictOrSpec = Union[Dict[Text, tf.Tensor], tensorspec_utils.TensorSpecStruct]
@@ -69,12 +70,12 @@ gin_configurable_run_config_cls = gin.external_configurable(
     denylist=['model_dir'])
 
 gin_configurable_tpu_run_config_cls = gin.external_configurable(
-    contrib_tpu.RunConfig,
+    TPURunConfig,
     name='tf.contrib.tpu.RunConfig',
     denylist=['model_dir', 'tpu_config'])
 
 gin_configurable_tpu_config_cls = gin.external_configurable(
-    contrib_tpu.TPUConfig, name='tf.contrib.tpu.TPUConfig')
+    TPURunConfig, name='tf.contrib.tpu.TPUConfig')
 
 # Expose the tf.train.Saver to gin.
 gin_configurable_saver = gin.external_configurable(
@@ -108,7 +109,7 @@ def default_init_from_checkpoint_fn(
   """
   logging.info('Initializing model weights from %s', checkpoint)
   reader = tf.train.load_checkpoint(checkpoint)
-  variables_to_restore = contrib_framework.get_variables()
+  variables_to_restore = tf_slim.get_variables()
   assignment_map = {}
   for v in variables_to_restore:
     if filter_restorables_fn is not None and not filter_restorables_fn(v):
@@ -372,7 +373,7 @@ class AbstractT2RModel(
       logging.info('Only updating the following trainables:')
       for var in variables_to_train:
         logging.info('  %s', var.name)
-    return contrib_training.create_train_op(
+    return eager_utils.create_train_op(
         loss,
         optimizer,
         summarize_gradients=summarize_gradients,

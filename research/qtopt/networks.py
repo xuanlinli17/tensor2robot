@@ -23,8 +23,8 @@ from six.moves import zip
 import tensorflow.compat.v1 as tf
 import tf_slim as slim
 
-from tensorflow.contrib import framework as contrib_framework
-from tensorflow.contrib import seq2seq as contrib_seq2seq
+from tensorflow import nest
+from tensorflow import seq2seq as contrib_seq2seq
 
 # Global constant. The number of layers that are part of the PNN.
 NUM_LAYERS = 19
@@ -416,7 +416,7 @@ class Grasping44FlexibleGraspParams(GraspingModel):
         dim = tf.shape(feature)[2]
         return tf.reshape(feature, [-1, dim])
 
-      grasp_params = contrib_framework.nest.map_structure(
+      grasp_params = nest.map_structure(
           expand_to_megabatch, grasp_params)
 
     # Note that we need to do this before calling the tf.variable_scope

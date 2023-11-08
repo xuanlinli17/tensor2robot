@@ -26,7 +26,7 @@ from tensor2robot.models import abstract_model
 from tensor2robot.utils import tensorspec_utils
 import tensorflow.compat.v1 as tf
 from tensorflow.compat.v1 import estimator as tf_estimator
-from tensorflow.contrib import util as contrib_util
+from tensorflow import make_tensor_proto
 
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_log_pb2
@@ -134,7 +134,7 @@ class AbstractExportGenerator(six.with_metaclass(abc.ABCMeta, object)):
 
         for key, numpy_spec in numpy_feature_specs.items():
           request.inputs[key].CopyFrom(
-              contrib_util.make_tensor_proto(numpy_spec))
+              make_tensor_proto(numpy_spec))
 
         log = prediction_log_pb2.PredictionLog(
             predict_log=prediction_log_pb2.PredictLog(request=request))
